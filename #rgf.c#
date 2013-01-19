@@ -6,22 +6,22 @@
 #define RED (10*KMAX)
 
 struct dist_name{
-  long long k;
+  int k;
   double p_raw;
   double c;
 } dist_k[MAX_SIZE];
 
-long long N=0,M=0;
+int N=0,M=0;
 double b,r,A,r_low,r_high,KMAX;
-long long raw_dat[MAX_SIZE];
+int raw_dat[MAX_SIZE];
 
 double relation_randb(double _b);
-double det_kc(long long kc);
+double det_kc(int kc);
 double det_A();
 
 double relation_randb(double _b)
 {
-  long long k;
+  int k;
   double sum_1=0,sum_2=0;
 
   for(k=1;k<RED;k++)
@@ -33,10 +33,10 @@ double relation_randb(double _b)
   return (sum_1/sum_2-(double)M/N);
 }
 
-double det_kc(long long kc)
+double det_kc(int kc)
 {
   double temp=0;
-  long long i;
+  int i;
   for(i=kc;i<RED;i++)
     temp+=A*exp(-b*(double)i)/pow((double)i,r);
   return (1./N-temp);
@@ -45,7 +45,7 @@ double det_kc(long long kc)
 double det_A()
 {
   double _sum=0;
-  long long k;
+  int k;
   
   for(k=1;k<RED;k++)
     {
@@ -59,24 +59,22 @@ double det_A()
 int main (int argc, char *argv[])
 {
   double mean_k;
-  long long kc,k;
+  int kc,k;
 
-  if(argc!=6)
+  if(argc!=5)
     {
       fprintf(stderr,"command line arguments; 1: M, 2:N, 3,4: initial range for searching r, 5:kmax\n");
       exit(1);
     }
   else
     {
-      sscanf(argv[1],"%ld",&M);
-      sscanf(argv[2],"%ld",&N);
+      sscanf(argv[1],"%d",&M);
+      sscanf(argv[2],"%d",&N);
       sscanf(argv[3],"%lf",&r_low);
       sscanf(argv[4],"%lf",&r_high);      
       sscanf(argv[5],"%lf",&KMAX);      
 
     }
-
-  fprintf(stderr,"%ld\n",M);
 
   /*
   M=(int)pow(2,28);
@@ -84,14 +82,12 @@ int main (int argc, char *argv[])
   mean_k=(double)M/N;
   r=1.6;
   */
-
-  mean_k=(double)M/N;
   
 
   for(r=r_low;r<=r_high;r+=0.1)
     {
       double temp_b=1e-8,temp_b2=1e2,sign_b1,sign_b2,dif,p_b=0,sign1,sign2,temp,temp2;
-      long long itemp,itemp2;
+      int itemp,itemp2;
       sign_b1=relation_randb(temp_b);
       sign_b2=relation_randb(temp_b2);
 
@@ -131,7 +127,7 @@ int main (int argc, char *argv[])
 	}
 
       A=det_A();
-      long long index=0;
+      int index=0;
 
       itemp=1;
       sign1=det_kc(itemp);
@@ -141,11 +137,11 @@ int main (int argc, char *argv[])
 
       if((sign1*sign2)<0)
 	{
-	  long long p_kc;
+	  int p_kc;
 
 	  while(fabs(itemp-itemp2)>1)
 	    {
-	      p_kc=(long long)(itemp+itemp2)/2;
+	      p_kc=(int)(itemp+itemp2)/2;
 
 	      sign1=det_kc(itemp);
 	      sign2=det_kc(p_kc);
